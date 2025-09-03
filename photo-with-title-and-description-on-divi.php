@@ -34,7 +34,8 @@ class PTD_Extension extends ET_Builder_Extension {
         wp_register_script( 'ptd-frontend-script', plugins_url( 'js/frontend.js', __FILE__ ), array( 'jquery', 'ptd-swiper-script' ), '1.0.0', true );
 
         // Conditionally enqueue assets only on pages with the module
-        if ( is_singular() && has_shortcode( get_post()->post_content, $this->get_modules()['AchievementsShowcaseModule']->slug ) ) {
+        $post = get_post();
+        if ( is_singular() && is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'ptd_achievements_showcase' ) ) {
             wp_enqueue_style( 'ptd-swiper-style' );
             wp_enqueue_style( 'ptd-style' );
             wp_enqueue_script( 'ptd-swiper-script' );
