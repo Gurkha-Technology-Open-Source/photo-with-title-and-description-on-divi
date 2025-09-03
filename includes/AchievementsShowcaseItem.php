@@ -13,12 +13,24 @@ class AchievementsShowcaseItem extends ET_Builder_Module {
         'author_uri'  => 'https://www.gurgurkhatech.com',
     );
 
+    /**
+     * Initializes the module.
+     *
+     * @since 1.0.0
+     */
     public function init() {
         $this->name = esc_html__( 'Achievement Item', 'ptd-divi-module' );
         $this->advanced_setting_title_text = esc_html__( 'Item', 'ptd-divi-module' );
         $this->settings_text = esc_html__( 'Item Settings', 'ptd-divi-module' );
     }
 
+    /**
+     * Gets the module's fields.
+     *
+     * @since 1.0.0
+     *
+     * @return array
+     */
     public function get_fields() {
         return array(
             'title' => array(
@@ -85,6 +97,17 @@ class AchievementsShowcaseItem extends ET_Builder_Module {
         );
     }
 
+    /**
+     * Renders the module output.
+     *
+     * @since 1.0.0
+     *
+     * @param array  $attrs       List of attributes.
+     * @param string $content     Content being rendered.
+     * @param string $render_slug Slug of the module being rendered.
+     *
+     * @return string
+     */
     public function render( $attrs, $content = null, $render_slug ) {
         $title = $this->props['title'];
         $description = $this->props['description'];
@@ -101,7 +124,7 @@ class AchievementsShowcaseItem extends ET_Builder_Module {
             // Basic oEmbed for YouTube/Vimeo
             $media_output = wp_oembed_get( esc_url( $video_url ) );
             if ( ! $media_output ) {
-                $media_output = '<div class="ptd-video-fallback">Video not available.</div>';
+                $media_output = sprintf( '<div class="ptd-video-fallback">%s</div>', esc_html__( 'Video not available.', 'ptd-divi-module' ) );
             }
         } elseif ( 'video_self' === $media_type && ! empty( $video_self ) ) {
             $media_output = sprintf( '<video src="%1$s" controls></video>', esc_url( $video_self ) );

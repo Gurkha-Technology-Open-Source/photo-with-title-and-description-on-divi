@@ -12,16 +12,35 @@ class AchievementsShowcaseModule extends ET_Builder_Module {
         'author_uri'  => 'https://www.gurgurkhatech.com',
     );
 
+    /**
+     * Initializes the module.
+     *
+     * @since 1.0.0
+     */
     public function init() {
         $this->name = esc_html__( 'Achievements Showcase', 'ptd-divi-module' );
     }
 
+    /**
+     * Gets the module's fields.
+     *
+     * @since 1.0.0
+     *
+     * @return array
+     */
     public function get_fields() {
         return array(
             // Will be populated with advanced fields in get_advanced_fields
         );
     }
 
+    /**
+     * Gets the module's advanced fields configuration.
+     *
+     * @since 1.0.0
+     *
+     * @return array
+     */
     public function get_advanced_fields_config() {
         return array(
             'fonts'                 => array(
@@ -101,9 +120,18 @@ class AchievementsShowcaseModule extends ET_Builder_Module {
         );
     }
 
+    /**
+     * Renders the module output.
+     *
+     * @since 1.0.0
+     *
+     * @param array  $attrs       List of attributes.
+     * @param string $content     Content being rendered.
+     * @param string $render_slug Slug of the module being rendered.
+     *
+     * @return string
+     */
     public function render( $attrs, $content = null, $render_slug ) {
-        $this->enqueue_assets( $render_slug );
-
         $slider_settings = array(
             'show_arrows'     => $this->props['show_arrows'],
             'show_pagination' => $this->props['show_pagination'],
@@ -128,13 +156,5 @@ class AchievementsShowcaseModule extends ET_Builder_Module {
         );
 
         return $output;
-    }
-
-    public function enqueue_assets( $render_slug ) {
-        wp_enqueue_style( 'ptd-swiper-style', plugins_url( '../lib/swiper-bundle.min.css', __FILE__ ) );
-        wp_enqueue_style( 'ptd-style', plugins_url( '../css/style.css', __FILE__ ) );
-
-        wp_enqueue_script( 'ptd-swiper-script', plugins_url( '../lib/swiper-bundle.min.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
-        wp_enqueue_script( 'ptd-frontend-script', plugins_url( '../js/frontend.js', __FILE__ ), array( 'jquery', 'ptd-swiper-script' ), '1.0.0', true );
     }
 }

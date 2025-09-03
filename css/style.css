@@ -1,4 +1,14 @@
-/* Achievements Showcase Module Styles */
+/* Visual Builder Placeholder for Child Items */
+.et-fb-root .et_pb_ptd_achievements_showcase_item.et_pb_is_empty:before {
+    content: 'Achievement Item: Add content in settings';
+    display: block;
+    padding: 20px;
+    background: #f2f2f2;
+    border: 2px dashed #ccc;
+    text-align: center;
+    color: #999;
+    font-weight: bold;
+}
 
 .ptd-achievements-showcase .swiper-container {
     width: 100%;

@@ -4,6 +4,9 @@
  * Plugin URI: https://www.gurgurkhatech.com
  * Description: A custom Divi module to display photos or videos with titles and descriptions in a slider.
  * Version: 1.0.0
+ * Requires at least: 5.6
+ * Requires PHP: 7.4
+ * Tested up to: 6.5
  * Author: Gurkha Technology
  * Author URI: https://www.gurgurkhatech.com
  * License: GPL2
@@ -16,6 +19,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class PTD_Extension extends ET_Builder_Extension {
+
+    public function __construct() {
+        parent::__construct();
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+    }
+
+    public function enqueue_assets() {
+        // Register assets
+        wp_register_style( 'ptd-swiper-style', plugins_url( 'lib/swiper-bundle.min.css', __FILE__ ) );
+        wp_register_style( 'ptd-style', plugins_url( 'css/style.css', __FILE__ ) );
+
+        wp_register_script( 'ptd-swiper-script', plugins_url( 'lib/swiper-bundle.min.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
+        wp_register_script( 'ptd-frontend-script', plugins_url( 'js/frontend.js', __FILE__ ), array( 'jquery', 'ptd-swiper-script' ), '1.0.0', true );
+
+        // Conditionally enqueue assets only on pages with the module
+        if ( is_singular() && has_shortcode( get_post()->post_content, $this->get_modules()['AchievementsShowcaseModule']->slug ) ) {
+            wp_enqueue_style( 'ptd-swiper-style' );
+            wp_enqueue_style( 'ptd-style' );
+            wp_enqueue_script( 'ptd-swiper-script' );
+            wp_enqueue_script( 'ptd-frontend-script' );
+        }
+    }
 
     /**
      * The get_modules() method is responsible for returning an array of modules
