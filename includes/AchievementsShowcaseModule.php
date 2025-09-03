@@ -4,6 +4,7 @@ class AchievementsShowcaseModule extends ET_Builder_Module {
     public $slug       = 'ptd_achievements_showcase';
     public $vb_support = 'on';
     public $child_slug = 'ptd_achievements_showcase_item';
+    public $child_item_text = 'Add Achievement';
 
     protected $module_credits = array(
         'module_name' => 'Achievements Showcase',
@@ -30,7 +31,51 @@ class AchievementsShowcaseModule extends ET_Builder_Module {
      */
     public function get_fields() {
         return array(
-            // Will be populated with advanced fields in get_advanced_fields
+            // Slider settings
+            'show_arrows' => array(
+                'label'   => esc_html__( 'Show Arrows', 'ptd-divi-module' ),
+                'type'    => 'yes_no_button',
+                'options' => array(
+                    'on'  => esc_html__( 'Yes', 'ptd-divi-module' ),
+                    'off' => esc_html__( 'No', 'ptd-divi-module' ),
+                ),
+                'default' => 'on',
+                'toggle_slug' => 'elements',
+            ),
+            'show_pagination' => array(
+                'label'   => esc_html__( 'Show Pagination', 'ptd-divi-module' ),
+                'type'    => 'yes_no_button',
+                'options' => array(
+                    'on'  => esc_html__( 'Yes', 'ptd-divi-module' ),
+                    'off' => esc_html__( 'No', 'ptd-divi-module' ),
+                ),
+                'default' => 'on',
+                'toggle_slug' => 'elements',
+            ),
+            'autoplay' => array(
+                'label'   => esc_html__( 'Autoplay', 'ptd-divi-module' ),
+                'type'    => 'yes_no_button',
+                'options' => array(
+                    'on'  => esc_html__( 'Yes', 'ptd-divi-module' ),
+                    'off' => esc_html__( 'No', 'ptd-divi-module' ),
+                ),
+                'default' => 'off',
+                'toggle_slug' => 'elements',
+            ),
+            'autoplay_speed' => array(
+                'label'       => esc_html__( 'Autoplay Speed (ms)', 'ptd-divi-module' ),
+                'type'        => 'range',
+                'default'     => '3000',
+                'range_settings' => array(
+                    'min'  => 500,
+                    'max'  => 10000,
+                    'step' => 100,
+                ),
+                'show_if'     => array(
+                    'autoplay' => 'on',
+                ),
+                'toggle_slug' => 'elements',
+            ),
         );
     }
 
@@ -70,53 +115,6 @@ class AchievementsShowcaseModule extends ET_Builder_Module {
                     ),
                 ),
             ),
-            'slider_settings' => array(
-                'label'           => esc_html__( 'Slider Settings', 'ptd-divi-module' ),
-                'toggle_slug'     => 'elements',
-                'sub_toggle'      => 'slider',
-                'options'         => array(
-                    'show_arrows' => array(
-                        'label'   => esc_html__( 'Show Arrows', 'ptd-divi-module' ),
-                        'type'    => 'yes_no_button',
-                        'options' => array(
-                            'on'  => esc_html__( 'Yes', 'ptd-divi-module' ),
-                            'off' => esc_html__( 'No', 'ptd-divi-module' ),
-                        ),
-                        'default' => 'on',
-                    ),
-                    'show_pagination' => array(
-                        'label'   => esc_html__( 'Show Pagination', 'ptd-divi-module' ),
-                        'type'    => 'yes_no_button',
-                        'options' => array(
-                            'on'  => esc_html__( 'Yes', 'ptd-divi-module' ),
-                            'off' => esc_html__( 'No', 'ptd-divi-module' ),
-                        ),
-                        'default' => 'on',
-                    ),
-                    'autoplay' => array(
-                        'label'   => esc_html__( 'Autoplay', 'ptd-divi-module' ),
-                        'type'    => 'yes_no_button',
-                        'options' => array(
-                            'on'  => esc_html__( 'Yes', 'ptd-divi-module' ),
-                            'off' => esc_html__( 'No', 'ptd-divi-module' ),
-                        ),
-                        'default' => 'off',
-                    ),
-                    'autoplay_speed' => array(
-                        'label'       => esc_html__( 'Autoplay Speed (ms)', 'ptd-divi-module' ),
-                        'type'        => 'range',
-                        'default'     => '3000',
-                        'range_settings' => array(
-                            'min'  => 500,
-                            'max'  => 10000,
-                            'step' => 100,
-                        ),
-                        'show_if'     => array(
-                            'autoplay' => 'on',
-                        ),
-                    ),
-                ),
-            ),
         );
     }
 
@@ -140,7 +138,7 @@ class AchievementsShowcaseModule extends ET_Builder_Module {
         );
 
         $output = sprintf(
-            '<div class="ptd-achievements-showcase" data-slider-settings='%1$s'>
+            '<div class="ptd-achievements-showcase" data-slider-settings=\'%1$s\'>
                 <div class="swiper-container">
                     <div class="swiper-wrapper">
                         %2$s
@@ -149,8 +147,8 @@ class AchievementsShowcaseModule extends ET_Builder_Module {
                     %4$s
                 </div>
             </div>',
-            esc_attr( json_encode( $slider_settings ) ),
-            $this->props['content'],
+            esc_attr( wp_json_encode( $slider_settings ) ),
+            $content,
             $this->props['show_arrows'] === 'on' ? '<div class="swiper-button-next"></div><div class="swiper-button-prev"></div>' : '',
             $this->props['show_pagination'] === 'on' ? '<div class="swiper-pagination"></div>' : ''
         );

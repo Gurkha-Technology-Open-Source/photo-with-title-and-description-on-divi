@@ -2,7 +2,13 @@
     $(document).ready(function() {
         $('.ptd-achievements-showcase').each(function() {
             var $slider = $(this);
-            var sliderData = $slider.data('slider-settings');
+            var raw = $slider.attr('data-slider-settings');
+            var sliderData = {};
+            try {
+                sliderData = raw ? JSON.parse(raw) : {};
+            } catch (e) {
+                sliderData = {};
+            }
 
             var swiperOptions = {
                 loop: true,
@@ -22,7 +28,7 @@
 
                 // Autoplay
                 autoplay: sliderData.autoplay === 'on' ? {
-                    delay: sliderData.autoplay_speed,
+                    delay: parseInt(sliderData.autoplay_speed || 3000, 10),
                     disableOnInteraction: false,
                 } : false,
             };
@@ -35,7 +41,7 @@
                 swiperOptions.pagination = false;
             }
 
-            new Swiper($slider.find('.swiper-container'), swiperOptions);
+            new Swiper($slider.find('.swiper-container')[0], swiperOptions);
         });
     });
 })(jQuery);
