@@ -1,9 +1,9 @@
 <?php
 
 class AchievementsShowcaseModule extends ET_Builder_Module {
-    public $slug       = 'ptd_achievements_showcase';
+    public $slug       = 'et_pb_ptd_achievements_showcase';
     public $vb_support = 'on';
-    public $child_slug = 'ptd_achievements_showcase_item';
+    public $child_slug = 'et_pb_ptd_achievements_showcase_item';
     public $child_item_text = 'Add Achievement';
 
     protected $module_credits = array(

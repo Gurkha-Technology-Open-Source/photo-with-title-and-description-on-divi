@@ -91,7 +91,7 @@ function ptd_initialize_extension() {
                 $post = get_post();
                 $has_shortcode = false;
                 if ( is_singular() && is_a( $post, 'WP_Post' ) ) {
-                    $has_shortcode = has_shortcode( $post->post_content, 'ptd_achievements_showcase' ) || has_shortcode( $post->post_content, 'et_pb_ptd_achievements_showcase' );
+                    $has_shortcode = has_shortcode( $post->post_content, 'et_pb_ptd_achievements_showcase' ) || has_shortcode( $post->post_content, 'ptd_achievements_showcase' );
                 }
                 if ( $has_shortcode ) {
                     wp_enqueue_style( 'ptd-swiper-style' );
