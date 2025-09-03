@@ -155,12 +155,26 @@ function ptd_render_help_page() {
     }
     echo '<h2>' . esc_html__( 'How to add your data', 'ptd-divi-module' ) . '</h2>';
     echo '<ol>';
-    echo '<li>' . esc_html__( 'Edit or create a page and enable the Divi Builder.', 'ptd-divi-module' ) . '</li>';
-    echo '<li>' . esc_html__( 'Insert the "Achievements Showcase" module.', 'ptd-divi-module' ) . '</li>';
-    echo '<li>' . esc_html__( 'Click "Add Achievement" to add items. For each item, set Title, Description, and choose Image or Video.', 'ptd-divi-module' ) . '</li>';
-    echo '<li>' . esc_html__( 'In the parent module settings, configure arrows, pagination, and autoplay as needed.', 'ptd-divi-module' ) . '</li>';
+    echo '<li>' . esc_html__( 'Go to Achievements > Add New to create achievements centrally.', 'ptd-divi-module' ) . '</li>';
+    echo '<li>' . esc_html__( 'Set Title, Description, Featured Image, and media type as needed.', 'ptd-divi-module' ) . '</li>';
+    echo '<li>' . esc_html__( 'Display options:', 'ptd-divi-module' ) . '</li>';
+    echo '<ul>';
+    echo '<li>' . esc_html__( 'Divi Builder: Add "Achievements Showcase" module and set Content Source to Global.', 'ptd-divi-module' ) . '</li>';
+    echo '<li>' . esc_html__( 'Shortcode: Use [ptd_achievements_showcase] in any post/page content.', 'ptd-divi-module' ) . '</li>';
+    echo '</ul>';
     echo '<li>' . esc_html__( 'Save and publish the page.', 'ptd-divi-module' ) . '</li>';
     echo '</ol>';
+    
+    echo '<h3>' . esc_html__( 'Shortcode Options', 'ptd-divi-module' ) . '</h3>';
+    echo '<p>' . esc_html__( 'Basic usage:', 'ptd-divi-module' ) . ' <code>[ptd_achievements_showcase]</code></p>';
+    echo '<p>' . esc_html__( 'With options:', 'ptd-divi-module' ) . ' <code>[ptd_achievements_showcase posts_per_page="5" show_arrows="off" autoplay="on"]</code></p>';
+    echo '<ul>';
+    echo '<li><strong>posts_per_page:</strong> ' . esc_html__( 'Number of achievements to show (default: 10)', 'ptd-divi-module' ) . '</li>';
+    echo '<li><strong>show_arrows:</strong> ' . esc_html__( 'on/off (default: on)', 'ptd-divi-module' ) . '</li>';
+    echo '<li><strong>show_pagination:</strong> ' . esc_html__( 'on/off (default: on)', 'ptd-divi-module' ) . '</li>';
+    echo '<li><strong>autoplay:</strong> ' . esc_html__( 'on/off (default: off)', 'ptd-divi-module' ) . '</li>';
+    echo '<li><strong>autoplay_speed:</strong> ' . esc_html__( 'Speed in milliseconds (default: 3000)', 'ptd-divi-module' ) . '</li>';
+    echo '</ul>';
     echo '</div>';
 }
 
@@ -278,3 +292,103 @@ function ptd_save_achievement_meta( $post_id ) {
     update_post_meta( $post_id, '_ptd_video_self', $video_self );
 }
 add_action( 'save_post_ptd_achievement', 'ptd_save_achievement_meta' );
+
+/**
+ * Shortcode fallback: [ptd_achievements_showcase]
+ */
+function ptd_shortcode_achievements_showcase( $atts ) {
+    $atts = shortcode_atts( array(
+        'source'         => 'global', // 'global' or 'manual' (manual would need IDs)
+        'posts_per_page' => '10',
+        'show_arrows'    => 'on',
+        'show_pagination' => 'on',
+        'autoplay'       => 'off',
+        'autoplay_speed' => '3000',
+    ), $atts, 'ptd_achievements_showcase' );
+
+    // Enqueue assets for shortcode usage
+    wp_enqueue_style( 'ptd-swiper-style' );
+    wp_enqueue_style( 'ptd-style' );
+    wp_enqueue_script( 'ptd-swiper-script' );
+    wp_enqueue_script( 'ptd-frontend-script' );
+
+    $slider_settings = array(
+        'show_arrows'     => $atts['show_arrows'],
+        'show_pagination' => $atts['show_pagination'],
+        'autoplay'        => $atts['autoplay'],
+        'autoplay_speed'  => $atts['autoplay_speed'],
+    );
+
+    // Build slides from CPT
+    $slides_html = '';
+    if ( 'global' === $atts['source'] ) {
+        $ppp = absint( $atts['posts_per_page'] );
+        if ( ! $ppp ) { $ppp = 10; }
+        $query = new WP_Query( array(
+            'post_type'      => 'ptd_achievement',
+            'posts_per_page' => $ppp,
+            'post_status'    => 'publish',
+            'no_found_rows'  => true,
+        ) );
+        if ( $query->have_posts() ) {
+            while ( $query->have_posts() ) {
+                $query->the_post();
+                $post_id     = get_the_ID();
+                $title       = get_the_title();
+                $description = get_the_content();
+                $media_type  = get_post_meta( $post_id, '_ptd_media_type', true );
+                $video_url   = get_post_meta( $post_id, '_ptd_video_url', true );
+                $video_self  = get_post_meta( $post_id, '_ptd_video_self', true );
+                if ( empty( $media_type ) ) { $media_type = 'image'; }
+
+                $media_output = '';
+                if ( 'image' === $media_type ) {
+                    $img = get_the_post_thumbnail_url( $post_id, 'full' );
+                    if ( $img ) {
+                        $media_output = sprintf( '<img src="%1$s" alt="%2$s" />', esc_url( $img ), esc_attr( $title ) );
+                    }
+                } elseif ( 'video_url' === $media_type && ! empty( $video_url ) ) {
+                    $embed = wp_oembed_get( esc_url( $video_url ) );
+                    $media_output = $embed ? $embed : '<div class="ptd-video-fallback">' . esc_html__( 'Video not available.', 'ptd-divi-module' ) . '</div>';
+                } elseif ( 'video_self' === $media_type && ! empty( $video_self ) ) {
+                    $media_output = sprintf( '<video src="%1$s" controls></video>', esc_url( $video_self ) );
+                }
+
+                $slides_html .= sprintf(
+                    '<div class="swiper-slide">
+                        <div class="ptd-media-container">%1$s</div>
+                        <div class="ptd-content">
+                            <h3 class="ptd-title">%2$s</h3>
+                            <div class="ptd-description">%3$s</div>
+                        </div>
+                    </div>',
+                    $media_output,
+                    esc_html( $title ),
+                    wpautop( wp_kses_post( $description ) )
+                );
+            }
+            wp_reset_postdata();
+        }
+    }
+
+    if ( empty( $slides_html ) ) {
+        return '<p>' . esc_html__( 'No achievements found.', 'ptd-divi-module' ) . '</p>';
+    }
+
+    $output = sprintf(
+        '<div class="ptd-achievements-showcase" data-slider-settings=\'%1$s\'>
+            <div class="swiper-container">
+                <div class="swiper-wrapper">%2$s</div>
+                %3$s
+                %4$s
+            </div>
+        </div>',
+        esc_attr( wp_json_encode( $slider_settings ) ),
+        $slides_html,
+        $atts['show_arrows'] === 'on' ? '<div class="swiper-button-next"></div><div class="swiper-button-prev"></div>' : '',
+        $atts['show_pagination'] === 'on' ? '<div class="swiper-pagination"></div>' : ''
+    );
+
+    return $output;
+}
+add_shortcode( 'ptd_achievements_showcase', 'ptd_shortcode_achievements_showcase' );
