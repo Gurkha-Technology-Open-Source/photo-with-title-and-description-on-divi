@@ -1,0 +1,108 @@
+/* Achievements Showcase Module Styles */
+
+.ptd-achievements-showcase .swiper-container {
+    width: 100%;
+    height: 100%;
+}
+
+.ptd-achievements-showcase .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+
+    /* Center slide content vertically */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.ptd-achievements-showcase .ptd-media-container {
+    width: 100%;
+    height: 250px; /* Default height */
+    overflow: hidden;
+}
+
+.ptd-achievements-showcase .ptd-media-container img,
+.ptd-achievements-showcase .ptd-media-container iframe,
+.ptd-achievements-showcase .ptd-media-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ptd-achievements-showcase .ptd-content {
+    padding: 20px;
+}
+
+.ptd-achievements-showcase .ptd-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.ptd-achievements-showcase .ptd-description {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Navigation */
+.ptd-achievements-showcase .swiper-button-next, 
+.ptd-achievements-showcase .swiper-button-prev {
+    color: #007aff;
+}
+
+.ptd-achievements-showcase .swiper-pagination-bullet-active {
+    background: #007aff;
+}
+
+/* Dark Text */
+.et_pb_bg_layout_light .ptd-title {
+    color: #333;
+}
+.et_pb_bg_layout_light .ptd-description {
+    color: #666;
+}
+
+/* Light Text */
+.et_pb_bg_layout_dark .ptd-content {
+    background-color: rgba(0,0,0,0.5);
+}
+.et_pb_bg_layout_dark .ptd-title {
+    color: #fff;
+}
+.et_pb_bg_layout_dark .ptd-description {
+    color: #eee;
+}
+.et_pb_bg_layout_dark .swiper-button-next, 
+.et_pb_bg_layout_dark .swiper-button-prev {
+    color: #fff;
+}
+.et_pb_bg_layout_dark .swiper-pagination-bullet {
+    background: #fff;
+}
+.et_pb_bg_layout_dark .swiper-pagination-bullet-active {
+    background: #007aff;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+    .ptd-achievements-showcase .ptd-media-container {
+        height: 200px;
+    }
+    .ptd-achievements-showcase .ptd-title {
+        font-size: 20px;
+    }
+    .ptd-achievements-showcase .ptd-description {
+        font-size: 14px;
+    }
+}
