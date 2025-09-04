@@ -13,6 +13,16 @@
             var swiperOptions = {
                 loop: true,
                 grabCursor: true,
+                spaceBetween: 20,
+                slidesPerView: 1,
+
+                // Responsive breakpoints
+                breakpoints: {
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 30,
+                    },
+                },
 
                 // Navigation
                 navigation: {
