@@ -42,6 +42,10 @@
                 delay: parseInt(data.autoplay_speed || 3000, 10),
                 disableOnInteraction: false,
             } : false,
+            on: {
+                init: function() { markTruncation($root); },
+                resize: function() { markTruncation($root); }
+            }
         };
 
         if (data.show_arrows !== 'on') {
@@ -52,7 +56,9 @@
             options.pagination = false;
         }
 
-        new Swiper(containerEl, options);
+        var sw = new Swiper(containerEl, options);
+        // Fallback safety re-check shortly after init
+        setTimeout(function(){ markTruncation($root); }, 100);
         $root.data('ptd-swiper-initialized', true);
     }
 
@@ -62,4 +68,19 @@
 
     $(initAll);
     $(window).on('load', initAll);
+    $(window).on('resize', function(){
+        $('.ptd-achievements-showcase').each(function(){ markTruncation($(this)); });
+    });
+
+    function markTruncation($root){
+        $root.find('.ptd-description').each(function(){
+            var el = this;
+            var $el = $(el);
+            // Remove flag first, then measure
+            $el.removeClass('ptd-is-truncated');
+            if (el.scrollHeight > (el.clientHeight + 1)) {
+                $el.addClass('ptd-is-truncated');
+            }
+        });
+    }
 })(jQuery);
