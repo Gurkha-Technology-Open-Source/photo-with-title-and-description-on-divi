@@ -81,19 +81,14 @@ function ptd_initialize_extension() {
 
             public function enqueue_assets() {
                 // Register assets
-                wp_register_style( 'ptd-swiper-style', plugins_url( 'lib/swiper-bundle.min.css', __FILE__ ) );
-                wp_register_style( 'ptd-style', plugins_url( 'css/style.css', __FILE__ ) );
+                wp_register_style( 'ptd-swiper-style', plugins_url( 'lib/swiper-bundle.min.css', __FILE__ ), array(), '9.0.0' );
+                wp_register_style( 'ptd-style', plugins_url( 'css/style.css', __FILE__ ), array(), '1.0.0' );
 
-                wp_register_script( 'ptd-swiper-script', plugins_url( 'lib/swiper-bundle.min.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
+                wp_register_script( 'ptd-swiper-script', plugins_url( 'lib/swiper-bundle.min.js', __FILE__ ), array(), '9.0.0', true );
                 wp_register_script( 'ptd-frontend-script', plugins_url( 'js/frontend.js', __FILE__ ), array( 'jquery', 'ptd-swiper-script' ), '1.0.0', true );
 
-                // Conditionally enqueue assets only on pages with the module shortcode in content.
-                $post = get_post();
-                $has_shortcode = false;
-                if ( is_singular() && is_a( $post, 'WP_Post' ) ) {
-                    $has_shortcode = has_shortcode( $post->post_content, 'et_pb_ptd_achievements_showcase' ) || has_shortcode( $post->post_content, 'ptd_achievements_showcase' );
-                }
-                if ( $has_shortcode ) {
+                // Enqueue on all front-end views to ensure Divi module pages have assets even when no shortcodes are present.
+                if ( ! is_admin() ) {
                     wp_enqueue_style( 'ptd-swiper-style' );
                     wp_enqueue_style( 'ptd-style' );
                     wp_enqueue_script( 'ptd-swiper-script' );
@@ -306,11 +301,11 @@ function ptd_shortcode_achievements_showcase( $atts ) {
         'autoplay_speed' => '3000',
     ), $atts, 'ptd_achievements_showcase' );
 
-    // Enqueue assets for shortcode usage
-    wp_enqueue_style( 'ptd-swiper-style' );
-    wp_enqueue_style( 'ptd-style' );
-    wp_enqueue_script( 'ptd-swiper-script' );
-    wp_enqueue_script( 'ptd-frontend-script' );
+    // Enqueue assets for shortcode usage (register with URLs to ensure availability)
+    wp_enqueue_style( 'ptd-swiper-style', plugins_url( 'lib/swiper-bundle.min.css', __FILE__ ), array(), '9.0.0' );
+    wp_enqueue_style( 'ptd-style', plugins_url( 'css/style.css', __FILE__ ), array(), '1.0.0' );
+    wp_enqueue_script( 'ptd-swiper-script', plugins_url( 'lib/swiper-bundle.min.js', __FILE__ ), array(), '9.0.0', true );
+    wp_enqueue_script( 'ptd-frontend-script', plugins_url( 'js/frontend.js', __FILE__ ), array( 'jquery', 'ptd-swiper-script' ), '1.0.0', true );
 
     $slider_settings = array(
         'show_arrows'     => $atts['show_arrows'],

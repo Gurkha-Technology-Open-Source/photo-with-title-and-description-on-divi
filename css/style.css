@@ -74,6 +74,8 @@
     overflow-wrap: break-word;
     hyphens: auto;
     max-width: 100%;
+    max-height: 250px; /* match image height on desktop */
+    overflow: hidden;
 }
 
 /* Navigation */
@@ -119,6 +121,9 @@
 @media (max-width: 767px) {
     .ptd-achievements-showcase .ptd-media-container {
         height: 200px;
+    }
+    .ptd-achievements-showcase .ptd-description {
+        max-height: 200px; /* match image height on mobile */
     }
     .ptd-achievements-showcase .ptd-title {
         font-size: 20px;
