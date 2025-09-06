@@ -98,28 +98,11 @@
     overflow-wrap: break-word;
     hyphens: auto;
     max-width: 100%;
-    max-height: 250px; /* match image height on desktop */
     overflow: hidden;
-}
-
-/* Ellipsis for truncated descriptions */
-.ptd-achievements-showcase .ptd-description.ptd-is-truncated {
-    position: relative;
-}
-.ptd-achievements-showcase .ptd-description.ptd-is-truncated:after {
-    content: '…';
-    position: absolute;
-    right: 10px;
-    bottom: 6px;
-    color: #666;
-    background: linear-gradient(to right, rgba(255,255,255,0), #fff 60%);
-    padding-left: 8px;
-}
-
-/* Dark layout variant */
-.et_pb_bg_layout_dark .ptd-achievements-showcase .ptd-description.ptd-is-truncated:after {
-    color: #eee;
-    background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.5) 60%);
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* show only 3 lines */
+    -webkit-box-orient: vertical;
+    line-clamp: 3;
 }
 
 /* Navigation */
@@ -165,9 +148,6 @@
 @media (max-width: 767px) {
     .ptd-achievements-showcase .ptd-media-container {
         height: 200px;
-    }
-    .ptd-achievements-showcase .ptd-description {
-        max-height: 200px; /* match image height on mobile */
     }
     .ptd-achievements-showcase .ptd-title {
         font-size: 20px;
