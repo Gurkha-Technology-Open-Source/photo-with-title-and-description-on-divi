@@ -349,18 +349,22 @@ function ptd_shortcode_achievements_showcase( $atts ) {
                     $media_output = sprintf( '<video src="%1$s" controls></video>', esc_url( $video_self ) );
                 }
 
-                $slides_html .= sprintf(
-                    '<div class="swiper-slide">
-                        <div class="ptd-media-container">%1$s</div>
+                $permalink   = get_permalink( $post_id );
+                $slide_inner = sprintf(
+                    '<a href="%1$s" target="_blank" rel="noopener" class="ptd-slide-link">
+                        <div class="ptd-media-container">%2$s</div>
                         <div class="ptd-content">
-                            <h3 class="ptd-title">%2$s</h3>
-                            <div class="ptd-description">%3$s</div>
+                            <h3 class="ptd-title">%3$s</h3>
+                            <div class="ptd-description">%4$s</div>
                         </div>
-                    </div>',
+                    </a>',
+                    esc_url( $permalink ),
                     $media_output,
                     esc_html( $title ),
                     wpautop( wp_kses_post( $description ) )
                 );
+
+                $slides_html .= '<div class="swiper-slide">' . $slide_inner . '</div>';
             }
             wp_reset_postdata();
         }
